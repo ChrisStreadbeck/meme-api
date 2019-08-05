@@ -45,6 +45,11 @@ def get_memes():
     result = memes_schema.dump(all_memes)
     return jsonify(result.data)
 
+@app.route("/meme/<id>", methods=["GET"])
+def get_meme(id):
+    meme = Meme.query.get(id)
+    return meme_schema.jsonify(meme)
+
 @app.route("/add-meme", methods=["POST"])
 def add_meme():
     text = request.json["text"]
@@ -66,11 +71,11 @@ def update_meme(id):
     image = request.json["image"]
     favorite = request.json["favorite"]
 
-    meme.title = title
-    meme.done = done 
+    meme.text = text
+    meme.favorite = favorite 
     
     db.session.commit()
-    return jsonify("Update Successful")
+    return meme_schema.jsonify(meme)
 
 
 @app.route("/meme/<id>", methods=["DELETE"])
